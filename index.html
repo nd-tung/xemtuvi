@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tử Vi Online - Xem Lá Số Tử Vi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .form-container {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        input[type="text"], input[type="date"], input[type="time"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        input[type="file"]:hover {
+            border-color: #667eea;
+            background: #f0f0f0;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .result h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .result-content {
+            line-height: 1.6;
+            color: #555;
+            font-size: 16px;
+        }
+        
+        .aspect-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+            transition: transform 0.3s ease;
+        }
+        
+        .aspect-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .aspect-card.tong-quan {
+            border-left-color: #ff6b6b;
+        }
+        
+        .aspect-card.cong-danh {
+            border-left-color: #4ecdc4;
+        }
+        
+        .aspect-card.tinh-duyen {
+            border-left-color: #45b7d1;
+        }
+        
+        .aspect-card.gia-dao {
+            border-left-color: #96ceb4;
+        }
+        
+        .aspect-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .aspect-title.tong-quan {
+            color: #ff6b6b;
+        }
+        
+        .aspect-title.cong-danh {
+            color: #4ecdc4;
+        }
+        
+        .aspect-title.tinh-duyen {
+            color: #45b7d1;
+        }
+        
+        .aspect-title.gia-dao {
+            color: #96ceb4;
+        }
+        
+        .aspect-content {
+            text-align: justify;
+            line-height: 1.8;
+            color: #444;
+        }
+        
+        .user-info {
+            background: linear-gradient(45deg, #a8edea, #fed6e3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .oracle-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .oracle-section h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .oracle-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .oracle-btn {
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+        
+        .oracle-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .oracle-btn:disabled {
+            background: rgba(128, 128, 128, 0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .oracle-result {
+            margin-top: 20px;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .hexagram {
+            font-size: 4em;
+            margin: 20px 0;
+            text-align: center;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .oracle-content {
+            text-align: justify;
+            line-height: 1.8;
+            color: #444;
+        }
+        
+        .history-btn {
+            background: linear-gradient(45deg, #feca57, #ff9ff3);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .history-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .reset-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: transform 0.3s;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .reset-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .history-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .history-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .history-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+    </style>
+</head>
+<body>
+    <button class="reset-btn" onclick="resetCookies()" title="Xóa lịch sử cookie">🗑️</button>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🔮 Tử Vi Online</h1>
+            <p>Khám phá vận mệnh qua lá số tử vi chính xác và chi tiết</p>
+        </div>
+        
+        <div class="form-container">
+            <form id="tuviForm">
+                <div class="form-group">
+                    <label for="name">👤 Họ và tên:</label>
+                    <input type="text" id="name" name="name" placeholder="Nhập họ tên của bạn" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="birthDate">📅 Ngày sinh (Dương lịch):</label>
+                    <input type="date" id="birthDate" name="birthDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="birthTime">🕐 Giờ sinh:</label>
+                    <input type="time" id="birthTime" name="birthTime" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tuviImage">📷 Tải lên ảnh lá số tử vi:</label>
+                    <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea;">
+                        <p style="margin: 0; font-size: 14px; color: #333;">💡 <strong>Hướng dẫn:</strong> Bạn có thể tạo lá số tử vi miễn phí tại các website như:</p>
+                        <ul style="margin: 10px 0 0 0; padding-left: 20px; font-size: 14px; color: #555;">
+                            <li><a href="https://tuvi.vn" target="_blank" style="color: #667eea;">tuvi.vn</a></li>
+                            <li><a href="https://xemtuvi.com" target="_blank" style="color: #667eea;">xemtuvi.com</a></li>
+                            <li><a href="https://lasotuvi.vn" target="_blank" style="color: #667eea;">lasotuvi.vn</a></li>
+                        </ul>
+                        <p style="margin: 10px 0 0 0; font-size: 13px; color: #666;">Nhớ chụp màn hình lá số tử vi sau khi tạo!</p>
+                    </div>
+                    <input type="file" id="tuviImage" name="tuviImage" accept="image/*" required>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    ✨ Xem Kết Quả Tử Vi
+                </button>
+            </form>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                Đang phân tích lá số tử vi của bạn...
+            </div>
+
+            <div class="result" id="result">
+                <h2>🌟 Kết Quả Phân Tích Tử Vi</h2>
+                <div class="user-info" id="userInfo"></div>
+                <div class="result-content" id="resultContent"></div>
+            </div>
+            
+            <div class="error" id="error" style="display: none;"></div>
+            
+            <div class="oracle-section">
+                <h3>🎰 Xin Quẻ Kinh Dịch</h3>
+                <p style="color: rgba(255,255,255,0.9); margin-bottom: 25px;">Xin quẻ theo chu kỳ thời gian khác nhau để biết được vận số và lời khuyên</p>
+                
+                <div class="oracle-buttons">
+                    <button class="oracle-btn" id="oracleWeek" onclick="askOracle('week')">
+                        📅 Xin Quẻ Tuần (1 Tuần)
+                    </button>
+                    <button class="oracle-btn" id="oracleMonth" onclick="askOracle('month')">
+                        🌙 Xin Quẻ Tháng (1 Tháng)
+                    </button>
+                    <button class="oracle-btn" id="oracleYear" onclick="askOracle('year')">
+                        ⭐ Xin Quẻ Năm (1 Năm)
+                    </button>
+                </div>
+                
+                <div class="oracle-result" id="oracleResult">
+                    <div class="hexagram" id="hexagram"></div>
+                    <h4 id="oracleTitle" style="margin-bottom: 15px; color: #333;"></h4>
+                    <div class="oracle-content" id="oracleContent"></div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="history-btn" onclick="showHistory('tuvi')">📖 Xem Lịch Sử Tử Vi</button>
+                    <button class="history-btn" onclick="showHistory('oracle')">🔮 Xem Lịch Sử Quẻ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- History Modal -->
+    <div id="historyModal" class="history-modal">
+        <div class="history-content">
+            <span class="close" onclick="closeHistory()">&times;</span>
+            <h2 id="historyTitle">Lịch Sử</h2>
+            <div id="historyData"></div>
+        </div>
+    </div>
+    <script>
+        const form = document.getElementById('tuviForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const error = document.getElementById('error');
+        const userInfo = document.getElementById('userInfo');
+        const resultContent = document.getElementById('resultContent');
+        
+        // Function to ask oracle
+        async function askOracle(type) {
+            const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+            const oracleBtn = document.getElementById(`oracle${capitalizedType}`);
+            
+            // Disable button during request
+            oracleBtn.disabled = true;
+            oracleBtn.style.opacity = '0.6';
+            oracleBtn.innerText = 'Đang xin quẻ...';
+
+            const lastRequestKey = `lastOracleRequest_${type}`;
+            const lastRequestTime = localStorage.getItem(lastRequestKey);
+            const now = new Date();
+
+            let timeLimit, typeName;
+            switch(type) {
+                case 'week':
+                    timeLimit = 7 * 24 * 60 * 60 * 1000; // 7 days
+                    typeName = 'tuần';
+                    break;
+                case 'month':
+                    timeLimit = 30 * 24 * 60 * 60 * 1000; // 30 days
+                    typeName = 'tháng';
+                    break;
+                case 'year':
+                    timeLimit = 365 * 24 * 60 * 60 * 1000; // 365 days
+                    typeName = 'năm';
+                    break;
+            }
+
+            const lastRequestTimeStr = getCookie(lastRequestKey);
+            if (lastRequestTimeStr && (now.getTime() - new Date(lastRequestTimeStr).getTime()) < timeLimit) {
+                const nextAllowedTime = new Date(new Date(lastRequestTimeStr).getTime() + timeLimit);
+                alert(`Bạn chỉ có thể xin quẻ này một lần mỗi ${typeName}. Vui lòng đợi đến ${nextAllowedTime.toLocaleDateString('vi-VN')}`);
+                
+                // Re-enable button
+                oracleBtn.disabled = false;
+                oracleBtn.style.opacity = '1';
+                oracleBtn.innerHTML = `${capitalizedType === 'Week' ? '📅' : capitalizedType === 'Month' ? '🌙' : '⭐'} Xin Quẻ ${capitalizedType === 'Week' ? 'Tuần' : capitalizedType === 'Month' ? 'Tháng' : 'Năm'} (1 ${capitalizedType === 'Week' ? 'Tuần' : capitalizedType === 'Month' ? 'Tháng' : 'Năm'})`;
+                return;
+            }
+
+            // Kiểm tra xem đã có thông tin người dùng chưa
+            const name = document.getElementById('name').value;
+            const birthDate = document.getElementById('birthDate').value;
+            const birthTime = document.getElementById('birthTime').value;
+            
+            if (!name || !birthDate || !birthTime) {
+                alert('Vui lòng điền đầy đủ thông tin cá nhân trước khi xin quẻ');
+                oracleBtn.disabled = false;
+                oracleBtn.style.opacity = '1';
+                oracleBtn.innerHTML = `${capitalizedType === 'Week' ? '📅' : capitalizedType === 'Month' ? '🌙' : '⭐'} Xin Quẻ ${capitalizedType === 'Week' ? 'Tuần' : capitalizedType === 'Month' ? 'Tháng' : 'Năm'} (1 ${capitalizedType === 'Week' ? 'Tuần' : capitalizedType === 'Month' ? 'Tháng' : 'Năm'})`;
+                return;
+            }
+            
+            try {
+                const userInfo = { name, birthDate, birthTime };
+                const userInfoString = JSON.stringify(userInfo);
+                const response = await fetch(`/oracle?type=${type}&userInfo=${encodeURIComponent(userInfoString)}`);
+                const data = await response.json();
+
+                    if (response.ok) {
+                        // Save the request time
+                        setCookie(lastRequestKey, now.toISOString(), 365);
+                        
+                        // Parse and display oracle result by aspects
+                        try {
+                            // Clean up the response to extract JSON
+                            let cleanedDescription = data.description.trim();
+                            
+                            // Remove any markdown code blocks or extra text
+                            if (cleanedDescription.includes('```json')) {
+                                cleanedDescription = cleanedDescription.replace(/.*```json\s*/, '').replace(/```.*/, '');
+                            } else if (cleanedDescription.includes('```')) {
+                                cleanedDescription = cleanedDescription.replace(/.*```\s*/, '').replace(/```.*/, '');
+                            }
+                            
+                            // Find JSON object in the response
+                            const jsonStart = cleanedDescription.indexOf('{');
+                            const jsonEnd = cleanedDescription.lastIndexOf('}');
+                            
+                            if (jsonStart !== -1 && jsonEnd !== -1) {
+                                cleanedDescription = cleanedDescription.substring(jsonStart, jsonEnd + 1);
+                            }
+                            
+                            const analysisData = JSON.parse(cleanedDescription);
+                            
+                            // Save history to cookies
+                            const historyKey = `oracleHistory_${type}`;
+                            const existingHistory = getCookie(historyKey);
+                            const history = existingHistory ? JSON.parse(existingHistory) : [];
+                            
+                            history.push({
+                                date: now.toLocaleDateString('vi-VN'),
+                                time: now.toLocaleTimeString('vi-VN'),
+                                hexagram: data.hexagram,
+                                title: data.title,
+                                userInfo: userInfo,
+                                analysis: analysisData
+                            });
+                            
+                            setCookie(historyKey, JSON.stringify(history), 365);
+                        
+                        const oracleResult = document.getElementById('oracleResult');
+                        
+                        oracleResult.innerHTML = `
+                            <div class="hexagram">${data.hexagram}</div>
+                            <div class="aspect-card tong-quan">
+                                <div class="aspect-title tong-quan">
+                                    <span>🌟</span>
+                                    <span>${data.title}</span>
+                                </div>
+                                <div class="aspect-content">${analysisData.van_so_chung}</div>
+                            </div>
+                            
+                            <div class="aspect-card cong-danh">
+                                <div class="aspect-title cong-danh">
+                                    <span>🏆</span>
+                                    <span>Công Việc - Sự Nghiệp</span>
+                                </div>
+                                <div class="aspect-content">${analysisData.cong_viec_su_nghiep}</div>
+                            </div>
+                            
+                            <div class="aspect-card tinh-duyen">
+                                <div class="aspect-title tinh-duyen">
+                                    <span>💕</span>
+                                    <span>Tình Cảm - Mối Quan Hệ</span>
+                                </div>
+                                <div class="aspect-content">${analysisData.tinh_cam_moi_quan_he}</div>
+                            </div>
+                            
+                            <div class="aspect-card gia-dao">
+                                <div class="aspect-title gia-dao">
+                                    <span>🏠</span>
+                                    <span>Sức Khỏe - Tài Chính</span>
+                                </div>
+                                <div class="aspect-content">${analysisData.suc_khoe_tai_chinh}</div>
+                            </div>
+                            
+                            <div class="aspect-card tong-quan">
+                                <div class="aspect-title tong-quan">
+                                    <span>🎆</span>
+                                    <span>Lời Khuyên Cụ Thể</span>
+                                </div>
+                                <div class="aspect-content">${analysisData.loi_khuyen_cu_the}</div>
+                            </div>
+                        `;
+                    } catch (parseError) {
+                        // If JSON parsing fails, display as plain text
+                        console.warn('Could not parse Oracle JSON response, displaying as plain text');
+                        const oracleResult = document.getElementById('oracleResult');
+                        
+                        oracleResult.innerHTML = `
+                            <div class="hexagram">${data.hexagram}</div>
+                            <div class="aspect-card tong-quan">
+                                <div class="aspect-title tong-quan">
+                                    <span>🌟</span>
+                                    <span>${data.title}</span>
+                                </div>
+                                <div class="aspect-content">${data.description}</div>
+                            </div>
+                        `;
+                        
+                        // Save simple history
+                        const historyKey = `oracleHistory_${type}`;
+                        const existingHistory = getCookie(historyKey);
+                        const history = existingHistory ? JSON.parse(existingHistory) : [];
+                        
+                        history.push({
+                            date: now.toLocaleDateString('vi-VN'),
+                            time: now.toLocaleTimeString('vi-VN'),
+                            hexagram: data.hexagram,
+                            title: data.title,
+                            userInfo: userInfo,
+                            description: data.description
+                        });
+                        
+                        setCookie(historyKey, JSON.stringify(history), 365);
+                    }
+
+                    oracleResult.style.display = 'block';
+                } else {
+                    throw new Error(data.message || 'Đã xảy ra lỗi khi xin quẻ');
+                }
+            } catch (err) {
+                alert(`Lỗi: ${err.message}`);
+            } finally {
+                // Re-enable button
+                oracleBtn.disabled = false;
+                oracleBtn.style.opacity = '1';
+                oracleBtn.innerHTML = `${capitalizedType === 'Week' ? '📅' : capitalizedType === 'Month' ? '🌙' : '⭐'} Xin Quẻ ${capitalizedType === 'Week' ? 'Tuần' : capitalizedType === 'Month' ? 'Tháng' : 'Năm'} (1 ${capitalizedType === 'Week' ? 'Tuần' : capitalizedType === 'Month' ? 'Tháng' : 'Năm'})`;
+            }
+        }
+        
+        // Cookie helper functions
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = name + '=' + encodeURIComponent(value) + ';expires=' + expires.toUTCString() + ';path=/';
+        }
+        
+        function getCookie(name) {
+            const nameEQ = name + '=';
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+            }
+            return null;
+        }
+        
+        function resetCookies() {
+            if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử?')) {
+                // Get all cookies
+                const cookies = document.cookie.split(';');
+                
+                // Delete each cookie
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i];
+                    const eqPos = cookie.indexOf('=');
+                    const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+                    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                }
+                
+                alert('Đã xóa toàn bộ lịch sử!');
+                location.reload();
+            }
+        }
+        
+        function showHistory(type) {
+            const modal = document.getElementById('historyModal');
+            const title = document.getElementById('historyTitle');
+            const data = document.getElementById('historyData');
+            
+            if (type === 'tuvi') {
+                title.textContent = '📖 Lịch Sử Xem Tử Vi';
+                const tuviHistory = getCookie('tuviHistory');
+                
+                if (tuviHistory) {
+                    const history = JSON.parse(tuviHistory);
+                    let content = '';
+                    
+                    history.forEach((item, index) => {
+                        content += `
+                            <div class="history-item">
+                                <h4>🔸 Lần ${index + 1} - ${item.date} ${item.time}</h4>
+                                <p><strong>👤 Tên:</strong> ${item.name}</p>
+                                <p><strong>📅 Ngày sinh:</strong> ${item.solarDate} (${item.lunarDate})</p>
+                                <p><strong>🕐 Giờ sinh:</strong> ${item.birthTime}</p>
+                                <details>
+                                    <summary style="cursor: pointer; font-weight: bold; color: #667eea;">📊 Xem phân tích</summary>
+                                    <div style="margin-top: 10px; padding: 15px; background: #f9f9f9; border-radius: 8px;">${item.analysis}</div>
+                                </details>
+                            </div>
+                        `;
+                    });
+                    
+                    data.innerHTML = content;
+                } else {
+                    data.innerHTML = '<p>Chưa có lịch sử xem tử vi nào.</p>';
+                }
+            } else if (type === 'oracle') {
+                title.textContent = '🔮 Lịch Sử Xin Quẻ';
+                let content = '';
+                
+                ['week', 'month', 'year'].forEach(oracleType => {
+                    const historyKey = `oracleHistory_${oracleType}`;
+                    const oracleHistory = getCookie(historyKey);
+                    
+                    if (oracleHistory) {
+                        const history = JSON.parse(oracleHistory);
+                        const typeName = oracleType === 'week' ? 'Tuần' : oracleType === 'month' ? 'Tháng' : 'Năm';
+                        
+                        content += `<h3 style="color: #667eea; margin-top: 20px;">${typeName}</h3>`;
+                        
+                        history.forEach((item, index) => {
+                            content += `
+                                <div class="history-item">
+                                    <h4>${item.hexagram} ${item.title} - ${item.date} ${item.time}</h4>
+                                    <p><strong>👤 Tên:</strong> ${item.userInfo.name}</p>
+                                    <details>
+                                        <summary style="cursor: pointer; font-weight: bold; color: #667eea;">📊 Xem phân tích</summary>
+                                        <div style="margin-top: 10px;">
+                                            ${item.analysis ? `
+                                                <div class="aspect-content"><strong>Vận số chung:</strong> ${item.analysis.van_so_chung || ''}</div>
+                                                <div class="aspect-content"><strong>Công việc:</strong> ${item.analysis.cong_viec_su_nghiep || ''}</div>
+                                                <div class="aspect-content"><strong>Tình cảm:</strong> ${item.analysis.tinh_cam_moi_quan_he || ''}</div>
+                                                <div class="aspect-content"><strong>Sức khỏe - Tài chính:</strong> ${item.analysis.suc_khoe_tai_chinh || ''}</div>
+                                                <div class="aspect-content"><strong>Lời khuyên:</strong> ${item.analysis.loi_khuyen_cu_the || ''}</div>
+                                            ` : `<div class="aspect-content">${item.description || ''}</div>`}
+                                        </div>
+                                    </details>
+                                </div>
+                            `;
+                        });
+                    }
+                });
+                
+                if (!content) {
+                    content = '<p>Chưa có lịch sử xin quẻ nào.</p>';
+                }
+                
+                data.innerHTML = content;
+            }
+            
+            modal.style.display = 'block';
+        }
+        
+        function closeHistory() {
+            document.getElementById('historyModal').style.display = 'none';
+        }
+        
+        // Make functions available globally
+        window.askOracle = askOracle;
+        window.showHistory = showHistory;
+        window.closeHistory = closeHistory;
+        window.resetCookies = resetCookies;
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            // Reset UI
+            result.style.display = 'none';
+            error.style.display = 'none';
+            loading.style.display = 'block';
+            submitBtn.disabled = true;
+            
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Save tử vi history to cookies
+                    const tuviHistoryKey = 'tuviHistory';
+                    const existingTuviHistory = getCookie(tuviHistoryKey);
+                    const tuviHistory = existingTuviHistory ? JSON.parse(existingTuviHistory) : [];
+                    
+                    tuviHistory.push({
+                        date: new Date().toLocaleDateString('vi-VN'),
+                        time: new Date().toLocaleTimeString('vi-VN'),
+                        name: data.name,
+                        birthTime: data.birthTime,
+                        solarDate: data.solarDate,
+                        lunarDate: data.lunarDate,
+                        analysis: data.analysis
+                    });
+                    
+                    setCookie(tuviHistoryKey, JSON.stringify(tuviHistory), 365);
+                    
+                    // Display user info
+                    userInfo.innerHTML = `
+                        <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            <h3 style="color: #333; margin-bottom: 15px; text-align: center; font-size: 1.3em;">📜 Thông Tin Cá Nhân</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left;">
+                                <div><strong>👤 Họ và tên:</strong><br>${data.name}</div>
+                                <div><strong>🕐 Giờ sinh:</strong><br>${data.birthTime}</div>
+                                <div><strong>📅 Ngày sinh (Dương lịch):</strong><br>${data.solarDate}</div>
+                                <div><strong>🌙 Ngày sinh (Âm lịch):</strong><br>${data.lunarDate}</div>
+                            </div>
+                        </div>
+                    `;
+                    
+// Parse and display analysis result by aspects
+                    try {
+                        console.log('Raw analysis data:', data.analysis);
+                        
+                        // Clean up the response to extract JSON
+                        let cleanedAnalysis = data.analysis.trim();
+                        
+                        // Remove any markdown code blocks or extra text
+                        if (cleanedAnalysis.includes('```json')) {
+                            cleanedAnalysis = cleanedAnalysis.replace(/.*```json\s*/, '').replace(/```.*/, '');
+                        } else if (cleanedAnalysis.includes('```')) {
+                            cleanedAnalysis = cleanedAnalysis.replace(/.*```\s*/, '').replace(/```.*/, '');
+                        }
+                        
+                        // Find JSON object in the response
+                        const jsonStart = cleanedAnalysis.indexOf('{');
+                        const jsonEnd = cleanedAnalysis.lastIndexOf('}');
+                        
+                        if (jsonStart !== -1 && jsonEnd !== -1) {
+                            cleanedAnalysis = cleanedAnalysis.substring(jsonStart, jsonEnd + 1);
+                        }
+                        
+                        console.log('Cleaned analysis:', cleanedAnalysis);
+                        const analysisData = JSON.parse(cleanedAnalysis);
+                        
+                        // Hiển thị kết quả tách biệt theo từng khía cạnh
+                        resultContent.innerHTML = `
+                            <div class="aspect-card tong-quan">
+                                <div class="aspect-title tong-quan">
+                                    <span>🌟</span>
+                                    <span>Tổng Quan Vận Mệnh</span>
+                                </div>
+                                <div class="aspect-content">${analysisData.tong_quan_van_menh}</div>
+                            </div>
+                            
+                            <div class="aspect-card cong-danh">
+                                <div class="aspect-title cong-danh">
+                                    <span>🏆</span>
+                                    <span>Công Danh - Sự Nghiệp</span>
+                                </div>
+                                <div class="aspect-content">${analysisData.cong_danh_su_nghiep}</div>
+                            </div>
+                            
+                            <div class="aspect-card tinh-duyen">
+                                <div class="aspect-title tinh-duyen">
+                                    <span>💕</span>
+                                    <span>Tình Duyên - Hôn Nhân</span>
+                                </div>
+                                <div class="aspect-content">${analysisData.tinh_duyen_hon_nhan}</div>
+                            </div>
+                            
+                            <div class="aspect-card gia-dao">
+                                <div class="aspect-title gia-dao">
+                                    <span>🏠</span>
+                                    <span>Gia Đạo - Sức Khỏe - Tài Chính</span>
+                                </div>
+                                <div class="aspect-content">${analysisData.gia_dao_suc_khoe_tai_chinh}</div>
+                            </div>
+                        `;
+                    } catch (parseError) {
+                        // If JSON parsing fails, display as plain text
+                        console.warn('Could not parse JSON response, displaying as plain text');
+                        resultContent.innerHTML = `<div class="aspect-content">${data.analysis}</div>`;
+                    }
+                    
+                    result.style.display = 'block';
+                } else {
+                    throw new Error(data.message || 'Đã xảy ra lỗi');
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                error.textContent = `Lỗi: ${err.message}`;
+                error.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // File input preview
+        document.getElementById('tuviImage').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                console.log('Selected file:', fileName);
+            }
+        });
+    </script>
+</body>
+</html>
+
