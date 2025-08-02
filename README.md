@@ -106,4 +106,56 @@ Nếu gặp vấn đề, hãy kiểm tra:
 ## 📄 License
 
 MIT License - Sử dụng tự do cho mục đích cá nhân và thương mại.
-# xemtuvi
+# Xem Tử Vi Online
+
+Ứng dụng web xem lá số tử vi và xin quẻ Kinh Dịch sử dụng công nghệ AI.
+
+## Tính năng
+
+- **Xem lá số tử vi**: Upload ảnh lá số tử vi và nhận phân tích chi tiết
+- **Xin quẻ Kinh Dịch**: Xin quẻ theo chu kỳ tuần/tháng/năm
+- **Lịch sử**: Lưu trữ lịch sử xem tử vi và xin quẻ
+- **Chuyển đổi lịch**: Tự động chuyển từ dương lịch sang âm lịch
+
+## Cài đặt
+
+1. Clone repository:
+```bash
+git clone https://github.com/nd-tung/xemtuvi.git
+cd xemtuvi
+```
+
+2. Cài đặt dependencies:
+```bash
+npm install
+```
+
+3. Tạo file `.env` và thêm API key:
+```
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+4. Chạy ứng dụng:
+```bash
+npm start
+```
+
+## Deploy lên Render
+
+1. Fork repository này
+2. Tạo tài khoản trên [Render.com](https://render.com)
+3. Tạo Web Service mới và connect với GitHub repository
+4. Thêm environment variable `GEMINI_API_KEY`
+5. Deploy tự động
+
+## Công nghệ sử dụng
+
+- **Backend**: Node.js, Express.js
+- **AI**: Google Gemini AI
+- **Frontend**: HTML, CSS, JavaScript
+- **Upload**: Multer
+- **Lịch âm**: @nghiavuive/lunar_date_vi
+
+## Giấy phép
+
+MIT License
