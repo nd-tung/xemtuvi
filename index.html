@@ -17,6 +17,105 @@
             min-height: 100vh;
             padding: 20px;
         }
+
+@media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 10px;
+            }
+
+            .header {
+                padding: 20px 15px;
+                position: relative;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+
+            .aspect-card {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .aspect-title {
+                font-size: 1.2em;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .hexagram {
+                font-size: 3em;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .oracle-section {
+                padding: 20px;
+                margin-top: 20px;
+            }
+
+            .oracle-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .oracle-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                width: 100%;
+            }
+
+            input[type="text"], input[type="date"], input[type="time"], input[type="file"] {
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            .submit-btn {
+                padding: 15px;
+                font-size: 16px;
+            }
+
+            .history-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+                margin-right: 5px;
+                margin-bottom: 10px;
+            }
+
+            .reset-btn {
+                top: 10px;
+                right: 10px;
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+
+            .history-content {
+                width: 95%;
+                margin: 2% auto;
+                padding: 20px;
+            }
+
+            .result {
+                padding: 20px;
+            }
+
+            .user-info div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+        }
         
         .container {
             max-width: 800px;
@@ -392,6 +491,9 @@
     
     <div class="container">
         <div class="header">
+            <div style="position: absolute; top: 10px; right: 20px; font-size: 12px; opacity: 0.8; color: rgba(255,255,255,0.9);">
+                © Nguyễn Dương Tùng
+            </div>
             <h1>🔮 Tử Vi Online</h1>
             <p>Khám phá vận mệnh qua lá số tử vi chính xác và chi tiết</p>
         </div>
